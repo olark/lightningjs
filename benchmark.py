@@ -6,6 +6,8 @@ from wsgiref.simple_server import make_server
 
 PORT = 8000
 
+JAVASCRIPT_URL = '//localhost:%(PORT)s/slowcontent?delay=2&type=text/javascript&jsonp=(window.finished||window.parent.finished)' % locals()
+
 BENCHMARK_INDEX_HTML = '''
 <!DOCTYPE html>
 <html>
@@ -21,7 +23,13 @@ BENCHMARK_INDEX_HTML = '''
         <h1>Benchmarking</h1>
         <ul>
             <li>
-                <a href="/synchronous">synchronous embed</a>
+                <a href="/synchronous">Synchronous Benchmark</a>
+            </li>
+            <li>
+                <a href="/asynchronous">Asynchronous Benchmark</a>
+            </li>
+            <li>
+                <a href="/lightning">Lightning Benchmark</a>
             </li>
         </ul>
     </body>
@@ -105,15 +113,45 @@ BENCHMARK_HTML_TEMPLATE = '''
 </html>
 '''
 
-EMBED_HTML_LOOKUP = {
-    'synchronous': '''<script type="text/javascript" src="//localhost:%(PORT)s/slowcontent?delay=2&type=text/javascript&jsonp=window.finished"></script>''' % locals()
-}
-
 
 class BenchmarkServer(object):
 
-    def __init__(self, jquery_code):
+    def __init__(self, javascript_url, jquery_code, lightning_embed_code):
+        self.__javascript_url = javascript_url
         self.__jquery_code = jquery_code
+        self.__lightning_embed_code = lightning_embed_code
+
+    def __get_embed_html(self, embed_name):
+        javascript_url = self.__javascript_url
+        lightning_embed_code = self.__lightning_embed_code
+        html_lookup = {
+
+            # simple synchronous loader
+            'synchronous': '''<script type="text/javascript" src="%(javascript_url)s"></script>''' % locals(),
+
+            # typical asynchronous loader
+            'asynchronous': '''
+                <script type="text/javascript">
+                (function(){
+                    var script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.async = true;
+                    script.src = '%(javascript_url)s';
+                    var entry = document.getElementsByTagName('script')[0];
+                    entry.parentNode.insertBefore(script, entry);
+                }());
+                </script>
+                ''' % locals(),
+
+            # lightning loader (e.g. from embed.js in this project)
+            'lightning': '''
+                <script type="text/javascript">
+                    %(lightning_embed_code)s;
+                    lightning.require("benchmark", "%(javascript_url)s");
+                </script>
+                ''' % locals(),
+        }
+        return html_lookup.get(embed_name, '''<script type="text/javascript">document.write("invalid page")</script>''')
 
     def application_callback(self, environ, start_response):
 
@@ -150,9 +188,9 @@ class BenchmarkServer(object):
             content_type = 'text/html'
             embed_name = path[1:]
             jquery_code = self.__jquery_code
-            embed_html = EMBED_HTML_LOOKUP.get(embed_name, EMBED_HTML_LOOKUP['synchronous'])
+            embed_html = self.__get_embed_html(embed_name=embed_name)
             content = BENCHMARK_HTML_TEMPLATE % dict(
-                embed_name=embed_name.capitalize(),
+                embed_name=embed_name.capitalize().replace('-', ' '),
                 embed_html=embed_html,
                 jquery_code=jquery_code,
                 )
@@ -167,8 +205,12 @@ if __name__ == '__main__':
 
     # run the benchmarking server
     port = PORT
-    jquery_path = os.path.abspath(os.path.dirname(__file__)) + '/jquery.js'
-    benchmark_server = BenchmarkServer(jquery_code=open(jquery_path).read())
+    project_path = os.path.abspath(os.path.dirname(__file__))
+    benchmark_server = BenchmarkServer(
+        javascript_url=JAVASCRIPT_URL,
+        jquery_code=open(project_path + '/jquery.js').read(),
+        lightning_embed_code=open(project_path + '/embed.js').read(),
+        )
     httpd = make_server('', port, benchmark_server.application_callback)
     print "serving locally on port %(port)s..." % locals()
     httpd.serve_forever()
