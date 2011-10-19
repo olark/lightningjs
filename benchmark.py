@@ -13,7 +13,7 @@ BENCHMARK_INDEX_HTML = '''
 <html>
     <head>
         <title>Embed Benchmarks</title>
-        <style type="text/javscript">
+        <style type="text/css">
             * {
                 font-family: monospace;
             }
