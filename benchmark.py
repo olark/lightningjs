@@ -17,21 +17,38 @@ BENCHMARK_INDEX_HTML = '''
             * {
                 font-family: monospace;
             }
+            iframe {
+                width: 100%;
+                border-width: 0px;
+                border-style: none;
+                margin: 0px;
+                padding: 0px;
+                height: 200px;
+            }
         </style>
+        <script type="text/javascript">
+            (function(){
+                var iframeUrlList = [
+                    '/synchronous',
+                    '/asynchronous',
+                    '/lightning'
+                ];
+                window.nextBenchmark = function() {
+                    var url = iframeUrlList.shift();
+                    if (url) {
+                        var iframe = document.createElement('iframe');
+                        iframe.src = 'javascript:false';
+                        document.body.appendChild(iframe);
+                        iframe.src = url;
+                    }
+                }
+                window.onload = function() {
+                    window.nextBenchmark();
+                }
+            })();
+        </script>
     </head>
     <body>
-        <h1>Benchmarking</h1>
-        <ul>
-            <li>
-                <a href="/synchronous">Synchronous Benchmark</a>
-            </li>
-            <li>
-                <a href="/asynchronous">Asynchronous Benchmark</a>
-            </li>
-            <li>
-                <a href="/lightning">Lightning Benchmark</a>
-            </li>
-        </ul>
     </body>
 </html>
 '''
@@ -55,6 +72,7 @@ BENCHMARK_HTML_TEMPLATE = '''
                 });
                 window.finished = function() {
                     $('#javascript-finished-time').text(getMillisecondsElapsed());
+                    window.parent.nextBenchmark();
                 };
             })(+new Date);
         </script>
@@ -211,6 +229,10 @@ if __name__ == '__main__':
         jquery_code=open(project_path + '/jquery.js').read(),
         lightning_embed_code=open(project_path + '/embed.js').read(),
         )
-    httpd = make_server('', port, benchmark_server.application_callback)
+    httpd = make_server(
+        host='',
+        port=port,
+        app=benchmark_server.application_callback,
+        )
     print "serving locally on port %(port)s..." % locals()
     httpd.serve_forever()
