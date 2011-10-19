@@ -74,7 +74,9 @@ BENCHMARK_HTML_TEMPLATE = '''
                 });
                 window.finished = function() {
                     $('#javascript-finished-time').text(getMillisecondsElapsed());
-                    window.parent.nextBenchmark();
+                    if (window.parent.nextBenchmark) {
+                        window.parent.nextBenchmark();
+                    }
                 };
             })(+new Date);
         </script>
