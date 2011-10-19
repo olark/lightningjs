@@ -11,6 +11,11 @@ BENCHMARK_INDEX_HTML = '''
 <html>
     <head>
         <title>Embed Benchmarks</title>
+        <style type="text/javscript">
+            * {
+                font-family: monospace;
+            }
+        </style>
     </head>
     <body>
         <h1>Benchmarking</h1>
@@ -31,14 +36,17 @@ BENCHMARK_HTML_TEMPLATE = '''
         <script type="text/javascript">
             %(jquery_code)s
             ;(function(initialTime){
+                function getMillisecondsElapsed() {
+                    return (+new Date - initialTime) + 'ms';
+                }
                 $(document).ready(function(){
-                    $('#document-ready-time').text(+new Date - initialTime);
+                    $('#document-ready-time').text(getMillisecondsElapsed());
                 });
                 $(window).load(function(){
-                    $('#window-load-time').text(+new Date - initialTime);
+                    $('#window-load-time').text(getMillisecondsElapsed());
                 });
                 window.finished = function() {
-                    $('#javascript-finished-time').text(+new Date - initialTime);
+                    $('#javascript-finished-time').text(getMillisecondsElapsed());
                 };
             })(+new Date);
         </script>
@@ -65,6 +73,7 @@ BENCHMARK_HTML_TEMPLATE = '''
                 background: #aaa;
             }
             .time-result {
+                text-align: right;
                 background: #ddd;
             }
         </style>
