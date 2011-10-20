@@ -3,8 +3,9 @@ import time
 import urlparse
 import StringIO
 from gzip import GzipFile
+from SocketServer import ThreadingMixIn
 from wsgiref.util import setup_testing_defaults
-from wsgiref.simple_server import make_server
+from wsgiref.simple_server import make_server, WSGIServer
 
 PORT = 8000
 
@@ -339,6 +340,11 @@ class BenchmarkServer(object):
         start_response(status, headers)
         return [content]
 
+
+class ThreadedWsgiServer(ThreadingMixIn, WSGIServer):
+     pass
+
+
 if __name__ == '__main__':
 
     # run the benchmarking server
@@ -352,6 +358,7 @@ if __name__ == '__main__':
         host='',
         port=port,
         app=Gzipper(benchmark_server.application_callback, compresslevel=8),
+        server_class=ThreadedWsgiServer,
         )
     print "serving locally on port %(port)s..." % locals()
     httpd.serve_forever()
