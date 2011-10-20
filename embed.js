@@ -1,4 +1,4 @@
-window.lightning || (function(modules){
+window.lightningjs || (function(modules){
     function require(ns, url) {
         // bv is the embed version, we attach it to the url (if given)
         var bv = '1';
@@ -95,7 +95,7 @@ window.lightning || (function(modules){
         return modules[ns]
     }
     // make sure that *something* is watching the onload event
-    var lightningjs = window.lightning = require('lightning');
+    var lightningjs = window.lightningjs = require('lightningjs');
     lightningjs.require = require;
     lightningjs.modules = modules;
 })({});

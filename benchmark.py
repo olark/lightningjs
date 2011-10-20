@@ -348,7 +348,7 @@ class BenchmarkServer(object):
             'lightning': '''
                 <script type="text/javascript">
                     %(lightning_embed_code)s;
-                    lightning.require("benchmark", '//' + window.location.host + window.embedScriptPath + '&cachebreaker=' + Math.random());
+                    lightningjs.require("benchmark", '//' + window.location.host + window.embedScriptPath + '&cachebreaker=' + Math.random());
                 </script>
                 ''' % locals(),
         }
