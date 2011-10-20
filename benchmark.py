@@ -65,21 +65,57 @@ BENCHMARK_HTML_TEMPLATE = '''
         <script type="text/javascript">
             %(jquery_code)s
             ;(function(initialTime){
+                var callbackCount = 0;
+                function trackCallback() {
+                    callbackCount++;
+                    if (callbackCount == 3) {
+                        // all callbacks are done, we can move to the next
+                        // benchmark if there is one
+                        if (window.parent.nextBenchmark) {
+                            window.parent.nextBenchmark();
+                        }
+                    }
+                }
                 function getMillisecondsElapsed() {
-                    return (+new Date - initialTime) + 'ms';
+                    return (+new Date - initialTime);
+                }
+                function getClassBasedOnExpectedTime(givenMilliseconds, expectedMilliseconds) {
+                    if (expectedMilliseconds <= givenMilliseconds && givenMilliseconds < (expectedMilliseconds + 1000)) {
+                        return 'success';
+                    } else {
+                        return 'failure';
+                    }
                 }
                 $(document).ready(function(){
-                    $('#document-ready-time').text(getMillisecondsElapsed());
+                    var milliseconds = getMillisecondsElapsed();
+                    trackCallback();
+                    // the DOM should be delayed by just 1 second due to the
+                    // inline script we put in there to delay it
+                    $('#document-ready-time')
+                        .text(milliseconds + 'ms')
+                        .addClass(getClassBasedOnExpectedTime(milliseconds, 1000));
                 });
                 $(window).load(function(){
-                    $('#window-load-time').text(getMillisecondsElapsed());
+                    var milliseconds = getMillisecondsElapsed();
+                    trackCallback();
+                    // the window load should be delayed by just 2 seconds total
+                    // given the delayed inline script and delayed async script
+                    // that we put in there to delay the load
+                    $('#window-load-time')
+                        .text(milliseconds + 'ms')
+                        .addClass(getClassBasedOnExpectedTime(milliseconds, 2000));
                 });
                 window.finished = function() {
-                    $('#javascript-finished-time').text(getMillisecondsElapsed());
-                    if (window.parent.nextBenchmark) {
-                        window.parent.nextBenchmark();
-                    }
+                    var milliseconds = getMillisecondsElapsed();
+                    trackCallback();
+                    // the Javascript code should finish loading after the 1
+                    // second delay of the document.ready due to the delayed
+                    // inline script plus the 4 seconds we delay the code itself
+                    $('#javascript-finished-time')
+                        .text(milliseconds + 'ms')
+                        .addClass(getClassBasedOnExpectedTime(milliseconds, 5000));
                 };
+                window.embedScriptPath = '/slowcontent?delay=4&type=text/javascript&jsonp=(window.finished||window.parent.finished)&readywait=true';
             })(+new Date);
         </script>
         <style type="text/css">
@@ -109,6 +145,14 @@ BENCHMARK_HTML_TEMPLATE = '''
                 text-align: right;
                 background: #ddd;
             }
+            .success {
+                background-color: #00AA13;
+                color: white;
+            }
+            .failure {
+                background-color: #AA0200;
+                color: white;
+            }
         </style>
     </head>
     <body>
@@ -129,6 +173,28 @@ BENCHMARK_HTML_TEMPLATE = '''
                 <td id="javascript-finished-time" class="time-result"></td>
             </tr>
         </table>
+
+        <!-- delay the DOM load to see embed impact on document.ready -->
+        <script type="text/javascript">
+            (function(d,u){
+                var h=d.location.protocol=='https:'?'https://':'http://';
+                d.write(unescape("%%3Cscript src='"+h+u+"' type='text/javascript'%%3E%%3C/script%%3E"));
+            })(document, window.location.host + '/slowcontent?type=text/javascript&delay=1&cachebreaker=' + Math.random());
+        </script>
+        <!-- end delayed document.ready measurement -->
+
+        <!-- delay the window load to see embed impact on window.onload -->
+        <script type="text/javascript">
+        (function(){
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = true;
+            script.src = '//' + window.location.host + '/slowcontent?type=text/javascript&delay=1&cachebreaker=' + Math.random();
+            var entry = document.getElementsByTagName('script')[0];
+            entry.parentNode.insertBefore(script, entry);
+        }());
+        </script>
+        <!-- end delayed window.onload measurement -->
 
         <!-- begin embed code -->
         %(embed_html)s
@@ -251,7 +317,6 @@ class BenchmarkServer(object):
         self.__lightning_embed_code = lightning_embed_code
 
     def __get_embed_html(self, embed_name):
-        javascript_path = '/slowcontent?delay=2&type=text/javascript&jsonp=(window.finished||window.parent.finished)'
         lightning_embed_code = self.__lightning_embed_code
         html_lookup = {
 
@@ -261,7 +326,7 @@ class BenchmarkServer(object):
                     (function(d,u){
                         var h=d.location.protocol=='https:'?'https://':'http://';
                         d.write(unescape("%%3Cscript src='"+h+u+"' type='text/javascript'%%3E%%3C/script%%3E"));
-                    })(document, window.location.host + '%(javascript_path)s&cachebreaker=' + Math.random());
+                    })(document, window.location.host + window.embedScriptPath + '&cachebreaker=' + Math.random());
                 </script>
                 ''' % locals(),
 
@@ -272,7 +337,7 @@ class BenchmarkServer(object):
                     var script = document.createElement('script');
                     script.type = 'text/javascript';
                     script.async = true;
-                    script.src = '//' + window.location.host + '%(javascript_path)s&cachebreaker=' + Math.random();
+                    script.src = '//' + window.location.host + window.embedScriptPath + '&cachebreaker=' + Math.random();
                     var entry = document.getElementsByTagName('script')[0];
                     entry.parentNode.insertBefore(script, entry);
                 }());
@@ -283,7 +348,7 @@ class BenchmarkServer(object):
             'lightning': '''
                 <script type="text/javascript">
                     %(lightning_embed_code)s;
-                    lightning.require("benchmark", '//' + window.location.host + '%(javascript_path)s&cachebreaker=' + Math.random());
+                    lightning.require("benchmark", '//' + window.location.host + window.embedScriptPath + '&cachebreaker=' + Math.random());
                 </script>
                 ''' % locals(),
         }
