@@ -18,6 +18,7 @@ BENCHMARK_INDEX_HTML = '''
                 font-family: monospace;
             }
             iframe {
+                overflow: hidden;
                 width: 100%;
                 border-width: 0px;
                 border-style: none;
@@ -37,6 +38,8 @@ BENCHMARK_INDEX_HTML = '''
                     var url = iframeUrlList.shift();
                     if (url) {
                         var iframe = document.createElement('iframe');
+                        iframe.scrolling = "no";
+                        iframe.frameBorder = "0";
                         iframe.src = 'javascript:false';
                         document.body.appendChild(iframe);
                         iframe.src = url;
@@ -84,6 +87,7 @@ BENCHMARK_HTML_TEMPLATE = '''
             }
             h1 {
                 text-align: center;
+                font-size: 1em;
             }
             table, td {
                 border-width: 1px;
@@ -92,12 +96,12 @@ BENCHMARK_HTML_TEMPLATE = '''
                 border-color: #888;
             }
             table {
-                width: 500px;
+                width: 600px;
                 margin-left: auto;
                 margin-right: auto;
             }
             td {
-                padding: 10px;
+                padding: 6px;
                 background: #aaa;
             }
             .time-result {
