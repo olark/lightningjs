@@ -310,6 +310,9 @@ class BenchmarkServer(object):
             content = "responded after delaying %(delay)s seconds with Content-type of %(content_type)s" % locals()
             if jsonp_callback:
                 content = "%(jsonp_callback)s(%(content)r)" % locals()
+            elif 'javascript' in content_type:
+                # otherwise we still want to make it valid Javascript
+                content = '// %(content)s' % locals()
 
         elif not path or path == '/':
 
