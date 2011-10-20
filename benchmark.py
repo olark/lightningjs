@@ -8,8 +8,6 @@ from wsgiref.simple_server import make_server
 
 PORT = 8000
 
-JAVASCRIPT_URL = '//localhost:%(PORT)s/slowcontent?delay=2&type=text/javascript&jsonp=(window.finished||window.parent.finished)' % locals()
-
 BENCHMARK_INDEX_HTML = '''
 <!DOCTYPE html>
 <html>
@@ -243,18 +241,24 @@ class Gzipper(object):
 
 class BenchmarkServer(object):
 
-    def __init__(self, javascript_url, jquery_code, lightning_embed_code):
-        self.__javascript_url = javascript_url
+    def __init__(self, jquery_code, lightning_embed_code):
         self.__jquery_code = jquery_code
         self.__lightning_embed_code = lightning_embed_code
 
     def __get_embed_html(self, embed_name):
-        javascript_url = self.__javascript_url
+        javascript_path = '/slowcontent?delay=2&type=text/javascript&jsonp=(window.finished||window.parent.finished)'
         lightning_embed_code = self.__lightning_embed_code
         html_lookup = {
 
             # simple synchronous loader
-            'synchronous': '''<script type="text/javascript" src="%(javascript_url)s"></script>''' % locals(),
+            'synchronous': '''
+                <script type="text/javascript">
+                    (function(d,u){
+                        var h=d.location.protocol=='https:'?'https://':'http://';
+                        d.write(unescape("%%3Cscript src='"+h+u+"' type='text/javascript'%%3E%%3C/script%%3E"));
+                    })(document, window.location.host + '%(javascript_path)s&cachebreaker=' + Math.random());
+                </script>
+                ''' % locals(),
 
             # typical asynchronous loader
             'asynchronous': '''
@@ -263,7 +267,7 @@ class BenchmarkServer(object):
                     var script = document.createElement('script');
                     script.type = 'text/javascript';
                     script.async = true;
-                    script.src = '%(javascript_url)s';
+                    script.src = '//' + window.location.host + '%(javascript_path)s&cachebreaker=' + Math.random();
                     var entry = document.getElementsByTagName('script')[0];
                     entry.parentNode.insertBefore(script, entry);
                 }());
@@ -274,7 +278,7 @@ class BenchmarkServer(object):
             'lightning': '''
                 <script type="text/javascript">
                     %(lightning_embed_code)s;
-                    lightning.require("benchmark", "%(javascript_url)s");
+                    lightning.require("benchmark", '//' + window.location.host + '%(javascript_path)s&cachebreaker=' + Math.random());
                 </script>
                 ''' % locals(),
         }
@@ -334,7 +338,6 @@ if __name__ == '__main__':
     port = PORT
     project_path = os.path.abspath(os.path.dirname(__file__))
     benchmark_server = BenchmarkServer(
-        javascript_url=JAVASCRIPT_URL,
         jquery_code=open(project_path + '/jquery.js').read(),
         lightning_embed_code=open(project_path + '/embed.js').read(),
         )
