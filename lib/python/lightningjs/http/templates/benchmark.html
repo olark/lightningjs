@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LightningJS Benchmarks</title>
+        <style type="text/css">
+            * {
+                font-family: monospace;
+            }
+            iframe {
+                overflow: hidden;
+                width: 100%;
+                border-width: 0px;
+                border-style: none;
+                margin: 0px;
+                padding: 0px;
+                height: 200px;
+            }
+        </style>
+        <script type="text/javascript">
+            ;(function(){
+                var iframeUrlList = [
+                    '/synchronous',
+                    '/asynchronous',
+                    '/lightning'
+                ];
+                window.nextBenchmark = function() {
+                    var url = iframeUrlList.shift();
+                    if (url) {
+                        var iframe = document.createElement('iframe');
+                        iframe.scrolling = "no";
+                        iframe.frameBorder = "0";
+                        iframe.src = 'javascript:false';
+                        document.body.appendChild(iframe);
+                        iframe.src = url;
+                    }
+                }
+                window.onload = function() {
+                    window.nextBenchmark();
+                }
+            })();
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

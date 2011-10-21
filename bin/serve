@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+
+import os, sys, time
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib', 'python'))
+from lightningjs.http import serve_routable_object, render_browser_template
+from lightningjs.compiler import minify_with_closure
+
+
+class RefreshableFile(object):
+
+    def __init__(self, path, read=None):
+        self.__path = path
+        self.__content = None
+        self.__last_timestamp = None
+        self.__read = read
+        self.read()
+
+    def read(self):
+        if not self.__content or self.__last_timestamp > os.path.getmtime(self.__path):
+            if self.__read:
+                self.__content = self.__read(path=self.__path)
+            else:
+                with open(self.__path, 'r') as fd:
+                    self.__content = fd.read()
+        return self.__content
+
+
+class DevelopmentServerRoutes(object):
+
+    def __init__(self):
+
+        # get a refreshable handle on the embed code
+        self.__lightningjs_embed_file = RefreshableFile(
+            path=os.path.join(os.path.dirname(__file__), '..', 'embed.js'),
+            read=minify_with_closure,
+            )
+
+        # cache the other Javascript that we'll want to serve quickly
+        self.__jquery_code = render_browser_template('jquery.min.js')
+        self.__synchronous_embed_javascript = render_browser_template('synchronous-embed.js')
+        self.__asynchronous_embed_javascript = render_browser_template('asynchronous-embed.js')
+
+    def get_index(self):
+
+        # show the main navigation page
+        content_type = 'text/html'
+        content = render_browser_template(path='index.html')
+        return '200 OK', content_type, content
+
+    def get_benchmark(self):
+
+        # show the root benchmarking page
+        content_type = 'text/html'
+        content = render_browser_template(path='benchmark.html')
+        return '200 OK', content_type, content
+
+    def get_synchronous(self):
+
+        content_type = 'text/html'
+        content = render_browser_template(
+            path='embed.html',
+            embed_name="Synchronous",
+            jquery_code=self.__jquery_code,
+            embed_javascript=self.__synchronous_embed_javascript,
+            )
+        return '200 OK', content_type, content
+
+    def get_asynchronous(self):
+
+        content_type = 'text/html'
+        content = render_browser_template(
+            path='embed.html',
+            embed_name="Asynchronous",
+            jquery_code=self.__jquery_code,
+            embed_javascript=self.__asynchronous_embed_javascript,
+            )
+        return '200 OK', content_type, content
+
+    def get_lightning(self):
+
+        extra_javascript = '''lightningjs.require("benchmark", '//' + window.location.host + window.embedScriptPath + '&cachebreaker=' + Math.random());'''
+        content_type = 'text/html'
+        content = render_browser_template(
+            path='embed.html',
+            embed_name="Lightning",
+            jquery_code=self.__jquery_code,
+            embed_javascript=self.__lightningjs_embed_file.read() + extra_javascript,
+            )
+        return '200 OK', content_type, content
+
+    def get_slowcontent(self, delay=0, content_type='text/html', jsonp=None, **kwargs):
+
+        # serve generic content of the given content type, but first
+        # we delay for the requested delay time
+        delay = float(delay)
+        if delay:
+            time.sleep(delay)
+        content = "responded after delaying %(delay)s seconds with Content-type of %(content_type)s" % locals()
+        if jsonp:
+
+            # make this a JSONP response
+            content = "%(jsonp)s(%(content)r)" % locals()
+
+        elif 'javascript' in content_type:
+            # otherwise we still want to make it valid Javascript
+            content = '// %(content)s' % locals()
+
+        # return our status/type/content tuple
+        return '200 OK', content_type, content
+
+
+if __name__ == '__main__':
+
+    print "lightningjs development server running, visit http://localhost:1167 in your browser..."
+    serve_routable_object(routable_object=DevelopmentServerRoutes(), port=1167)
