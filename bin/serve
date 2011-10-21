@@ -31,7 +31,7 @@ class DevelopmentServerRoutes(object):
 
         # get a refreshable handle on the embed code
         self.__lightningjs_embed_file = RefreshableFile(
-            path=os.path.join(os.path.dirname(__file__), '..', 'embed.js'),
+            path=os.path.join(os.path.dirname(__file__), '..', 'lightning-embed.js'),
             read=minify_with_closure,
             )
 

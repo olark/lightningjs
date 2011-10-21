@@ -62,7 +62,7 @@ That should be all you need to get up and running :)
 # Advanced Usage
 
 If you want to provide an asynchronous API with your embed code, you can do so
-by starting with the included `loader.js`.  This file has all the methods you
+by starting with the included `lightningjs-bootstrap.js`.  This file has all the methods you
 need to handle asynchronous calls against your namespace from the embed code.
 
 *TODO: more documentation*

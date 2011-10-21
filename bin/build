@@ -6,10 +6,16 @@ from lightningjs.compiler import minify_with_closure
 
 if __name__ == '__main__':
 
-    # get all our build paths
-    path_to_embed = os.path.join(os.path.dirname(__file__), '..', 'embed.js')
+    # minify the embed code
+    print "building lightningjs-embed.js..."
+    path_to_embed = os.path.join(os.path.dirname(__file__), '..', 'lightningjs-embed.js')
     path_to_minified_embed = path_to_embed.replace('.js', '.min.js')
-
-    # minify
     with open(path_to_minified_embed, 'w+') as minified_embed_fd:
         minified_embed_fd.write(minify_with_closure(path=path_to_embed))
+
+    # minify the bootstrap code
+    print "building lightningjs-bootstrap.js..."
+    path_to_bootstrap = os.path.join(os.path.dirname(__file__), '..', 'lightningjs-bootstrap.js')
+    path_to_minified_bootstrap = path_to_bootstrap.replace('.js', '.min.js')
+    with open(path_to_minified_bootstrap, 'w+') as minified_bootstrap_fd:
+        minified_bootstrap_fd.write(minify_with_closure(path=path_to_bootstrap))
