@@ -17,6 +17,12 @@ As a third-party Javascript provider, LightningJS addresses most
 "worst case scenarios" that can affect the parent page when your servers
 (or your code) misbehave in the wild.
 
+Due to its nonblocking design, you should be able to embed this code anywhere in the
+parent page. Embedding in the `<head>...</head>` of the HTML will likely speed
+up the load time of your library, without having a negative affect on the parent
+page.
+
+
 # Basic Usage
 
 To make your own embed code, just start with `embed.min.js` and then underneath
@@ -26,16 +32,17 @@ For example: if you named your library namespace "zippyzoop", then your
 final embed code will look something like this:
 
     window.lightningjs||(function(modules){...minified lightningjs embed code...})({});
-    lightningjs.require("zippyzoop", "//static.zippyzoop.com/zzloader.js");
+    lightningjs.require("zippyzoop", "//static.zippyzoop.com/zippyzoop.js");
 
-Keep in mind that the target file will be loaded **in its own `window` context**.
+Keep in mind that the target library will be loaded **in its own `window` context**.
 If you want to access the DOM of the actual page, you will need to grab the
-`window.parent` object.  For example, `zzloader.js` would probably look like this:
+`window.parent` object.  For example, `zippyzoop.js` would probably look like this:
 
     ;(function(window, document){
         
-        // ensure your codebase refers directly to these
-        // window and document objects
+        // ensure your codebase refers explicitly to these
+        // window and document objects when making changes
+        // to the parent page
         
     })(window.parent, window.parent.document);
 
