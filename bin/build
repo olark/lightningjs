@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+import os, sys, time
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib', 'python'))
+from lightningjs.compiler import minify_with_closure
+
+if __name__ == '__main__':
+
+    # get all our build paths
+    path_to_embed = os.path.join(os.path.dirname(__file__), '..', 'embed.js')
+    path_to_minified_embed = path_to_embed.replace('.js', '.min.js')
+
+    # minify
+    with open(path_to_minified_embed, 'w+') as minified_embed_fd:
+        minified_embed_fd.write(minify_with_closure(path=path_to_embed))
