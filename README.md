@@ -13,7 +13,7 @@ With LightningJS, all of that third-party code lives in its own separate
 `window` context.  If the code needs to do DOM manipulation, it still has
 access to the original document via `window.parent`.
 
-### **Fast:** avoids blocking `window.onload` and `document.ready`
+### **Fast:** avoids blocking window.onload and document.ready
 
 Slowdowns in embedded third-party code should never impact the original document.
 Traditional embed techniques can block `window.onload` if the server responds
