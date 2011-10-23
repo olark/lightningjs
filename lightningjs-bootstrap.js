@@ -89,21 +89,34 @@ window.lightningjs || (function(window){
                 methodSource = methodSourceId > 0 ? responses[methodSourceId] : api,
                 methodArguments = Array.prototype.slice.call(call[2]),
                 methodName = methodArguments.shift(),
+                methodFulfillmentHandlers = root._.fh[methodResponseId] || [],
+                methodErrorHandlers = root._.eh[methodResponseId] || [],
+                // TODO: progress handling is not implemented yet
+                methodProgressHandlers = root._.ph[methodResponseId] || [],
                 method,
-                methodResponse;
+                methodResponse,
+                methodError;
             // reconstruct the call and perform it on the API
             if (methodSource) {
                 // this is a deferred call on the root API namespace
                 method = methodSource[methodName];
                 if (method) {
                     // call the deferred method
-                    methodResponse = method.apply(method, methodArguments);
+                    try {
+                        methodResponse = method.apply(method, methodArguments);
+                    } catch(e) {
+                        methodError = e;
+                    }
                 } else {
                     // nothing matched for this call, fall back to wildcard
                     method = methodSource['_call'];
                     if (method) {
                         methodArguments.unshift(methodName);
-                        methodResponse = method.apply(method, methodArguments);
+                        try {
+                            methodResponse = method.apply(method, methodArguments);
+                        } catch(e) {
+                            methodError = e;
+                        }
                     } else {
                         logError("unknown deferred method '" + methodName + "'");
                     }
@@ -111,6 +124,28 @@ window.lightningjs || (function(window){
                 if (methodResponse) {
                     responses[methodResponseId] = methodResponse;
                 }
+
+                // ensure that the proper callbacks and errorHandlers get called
+                if (methodError) {
+                    while (methodErrorHandlers.length) {
+                        var errorHandler = methodErrorHandlers.shift();
+                        try {
+                            errorHandler(methodError);
+                        } catch(e) {
+                            logError(e);
+                        }
+                    }
+                } else {
+                    while (methodFulfillmentHandlers.length) {
+                        var fulfillmentHandler = methodFulfillmentHandlers.shift();
+                        try {
+                            fulfillmentHandler(methodResponse);
+                        } catch(e) {
+                            logError(e);
+                        }
+                    }
+                }
+
             } else {
                 logError("cannot call deferred method '" + methodName + "' on 'undefined'")
             }

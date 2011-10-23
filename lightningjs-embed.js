@@ -21,9 +21,20 @@ window.lightningjs || (function(modules){
                         fn.id = rd;
                         return modules[g].apply(fn, arguments)
                     }
+                    fn.then = function(fulfillmentHandler, errorHandler, progressHandler) {
+                        var fulfillmentHandlers = c.fh[rd] = c.fh[rd] || [],
+                            errorHandlers = c.eh[rd] = c.eh[rd] || [],
+                            progressHandlers = c.ph[rd] = c.ph[rd] || [];
+                        fulfillmentHandler && fulfillmentHandlers.push(fulfillmentHandler);
+                        errorHandler && errorHandlers.push(errorHandler);
+                        progressHandler && progressHandlers.push(progressHandler);
+                    }
                     return fn
                 };
                 var c = modules[g]._ = {};
+                c.fh = {};
+                c.eh = {};
+                c.ph = {};
                 c.l = url ? url.replace(/^\/\//, (protocol=='https:' ? protocol : 'http:') + '//') : url;
                 c.i = arguments.callee;
                 c.p = {
