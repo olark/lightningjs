@@ -47,12 +47,12 @@ window.lightningjs || (function(modules){
                 // track the window.onload event
                 function d() {
                     c.P(b);
-                    modules.w = 1;
+                    c.w = 1;
                     modules[g]('_load')
                 }
                 // if the window.onload event triggered previously for any other
                 // namespace, track it again for this namespace
-                if (modules.w) d();
+                if (c.w) d();
                 e.addEventListener ? e.addEventListener(b, d, false) : e.attachEvent("on" + b, d);
 
                 // download the library (if a URL was given...otherwise we
