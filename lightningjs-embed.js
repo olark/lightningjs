@@ -29,6 +29,7 @@ window.lightningjs || (function(modules){
                         fulfillmentHandler && fulfillmentHandlers.push(fulfillmentHandler);
                         errorHandler && errorHandlers.push(errorHandler);
                         progressHandler && progressHandlers.push(progressHandler);
+                        return fn;
                     }
                     return fn
                 };
