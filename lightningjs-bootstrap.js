@@ -118,7 +118,8 @@ window.lightningjs || (function(window){
                             methodError = e;
                         }
                     } else {
-                        logError("unknown deferred method '" + methodName + "'");
+                        methodError = new Error("unknown deferred method '" + methodName + "'");
+                        logError(methodError.toString());
                     }
                 }
                 if (methodResponse) {
