@@ -1,4 +1,5 @@
 window.lightningjs || (function(modules){
+    var ljs = 'lightningjs';
     function require(ns, url) {
         // bv is the embed version, we attach it to the url (if given)
         var bv = '1';
@@ -70,15 +71,15 @@ window.lightningjs || (function(modules){
                     z = "createElement",
                     s = "src",
                     q = h[z]("div"),
-                    F = q[u](h[z](g)),
+                    F = q[u](h[z]("div")),
                     C = h[z]("iframe"),
                     A = "document",
                     B = "domain",
                     l;
                     q.style.display = "none";
-                    r.insertBefore(q, r.firstChild).id = g;
+                    r.insertBefore(q, r.firstChild).id = ljs + "-" + g;
                     C.frameBorder = "0";
-                    C.id = g + "-loader";
+                    C.id = ljs + "-frame-" + g;
                     if (/MSIE[ ]+6/.test(navigator.userAgent)) {
                         C.src = "javascript:false"
                     }
@@ -106,7 +107,7 @@ window.lightningjs || (function(modules){
         return modules[ns]
     }
     // make sure that *something* is watching the onload event
-    var lightningjs = window.lightningjs = require('lightningjs');
+    var lightningjs = window[ljs] = require(ljs);
     lightningjs.require = require;
     lightningjs.modules = modules;
 })({});
