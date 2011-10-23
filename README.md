@@ -80,7 +80,7 @@ Finally, we might expose some error handling to our customers for exceptional ca
 
 # Getting Started
 
-## **Step 1**: Create your embed code
+### **Step 1**: Create your embed code
 
 To make your own embed code, just start with `embed.min.js` and then underneath
 that code you can simply use `lightningjs.require` to pull in your library.
@@ -98,7 +98,7 @@ The extra "guards" around the code ensure that you avoid any issues with
 template engines (e.g. Drupal, Joomla, etc) and XHTML parsers...as a third-party
 provider it pays to be prepared for all kinds of document environments.
 
-## **Step 2**: Modify your codebase to use the parent window context
+### **Step 2**: Modify your codebase to use the parent window context
 
 Keep in mind that your code will be loaded **in its own window context**.
 If you need to access the globals on the original document, you should grab the
@@ -113,7 +113,7 @@ a `with` context:
         // your existing codebase goes here
     }
 
-## **Step 3 (optional)**: Enable asynchronous calls to your library
+### **Step 3 (optional)**: Enable asynchronous calls to your library
 
 If you want to utilize the asynchronous API that the embed code creates for your
 namespace, you can do so by pasting the code from `lightningjs-bootstrap.min.js`
@@ -137,7 +137,7 @@ For example, you could expose your `fireWarningShot` method like so:
         }
     });
 
-## **Step 4 (optional)**: Force expensive methods to execute after the original document loads
+### **Step 4 (optional)**: Force expensive methods to execute after the original document loads
 
 Tools like Google PageSpeed and YSlow sometimes penalize pages for executing
 too much Javascript before the page loads.  Therefore, you may want to avoid
