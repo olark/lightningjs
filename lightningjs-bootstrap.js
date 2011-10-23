@@ -1,12 +1,12 @@
-window.lightningjs || (function(window){
+window.lightningjs || (function(window, parentLightningjs){
 
-    var innerLightningjs = window.lightningjs = {},
-        modules = window.parent.lightningjs.modules;
+    var innerLightningjs = window.lightningjs = {modules: parentLightningjs.modules},
+        modules = parentLightningjs.modules;
     innerLightningjs.expensive = function(callback) {
         callback._waitforload = true;
         return callback;
     }
-    innerLightningjs.require = window.parent.lightningjs.require;
+    innerLightningjs.require = parentLightningjs.require;
     innerLightningjs.provide = function(ns, api) {
         // in case we are calling provide() without having ever require()d it,
         // make sure that we create the default callstack, etc
@@ -179,16 +179,16 @@ window.lightningjs || (function(window){
         // define lightningjs deferred methods
         innerLightningjs.provide('lightningjs', {
             'load': function() {
-                var modules = window.parent.lightningjs.modules,
+                var modules = parentLightningjs.modules,
                     moduleObj;
                 for (var moduleName in modules) {
                     moduleObj = modules[moduleName];
                     if (moduleObj._) {
-                        window.parent[moduleName]('_load')
+                        moduleObj('_load')
                     }
                 }
             }
         })
     }
 
-})(window);
+})(window, window.parent.lightningjs);
