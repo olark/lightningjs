@@ -45,10 +45,10 @@ class DevelopmentServerRoutes(object):
 
         # get a refreshable handle on our test code
         self.__test_javascript_file = RefreshableFile(
-            path=os.path.join(os.path.dirname(__file__), '..', 'tests', 'test.js'),
+            path=os.path.join(os.path.dirname(__file__), '..', 'test', 'test.js'),
             )
         self.__testlib_javascript_file = RefreshableFile(
-            path=os.path.join(os.path.dirname(__file__), '..', 'tests', 'testlib.js'),
+            path=os.path.join(os.path.dirname(__file__), '..', 'test', 'testlib.js'),
             )
 
         # cache the other Javascript that we'll want to serve quickly
