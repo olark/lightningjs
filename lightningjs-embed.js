@@ -20,7 +20,7 @@ window.lightningjs || (function(modules){
                     promiseFunctionId = ++rd,
                     id = cx ? (cx.id || 0) : 0; (c.s = c.s || []).push([promiseFunctionId, id, ar]);
                     function fn() {
-                        fn.id = rd;
+                        fn.id = promiseFunctionId;
                         return modules[g].apply(fn, arguments)
                     }
                     fn.then = function(fulfillmentHandler, errorHandler, progressHandler) {
