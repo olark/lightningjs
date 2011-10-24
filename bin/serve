@@ -78,6 +78,7 @@ class DevelopmentServerRoutes(object):
 
         # allow the requester to specify how long this document should take
         # to download, to test asynchronicity more effectively
+        delay = float(delay)
         if delay:
             time.sleep(delay)
 
