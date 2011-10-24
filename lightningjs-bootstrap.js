@@ -108,19 +108,10 @@ window.lightningjs || (function(window, parentLightningjs){
                         methodError = e;
                     }
                 } else {
-                    // nothing matched for this call, fall back to wildcard
-                    method = methodSource['_call'];
-                    if (method) {
-                        methodArguments.unshift(methodName);
-                        try {
-                            methodResponse = method.apply(method, methodArguments);
-                        } catch(e) {
-                            methodError = e;
-                        }
-                    } else {
-                        methodError = new Error("unknown deferred method '" + methodName + "'");
-                        logError(methodError.toString());
-                    }
+                    // no methods matched for this call
+                    // TODO: consider some kind of method_missing approach here?
+                    methodError = new Error("unknown deferred method '" + methodName + "'");
+                    logError(methodError.toString());
                 }
                 if (methodResponse) {
                     responses[methodResponseId] = methodResponse;
