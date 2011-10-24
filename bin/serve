@@ -9,19 +9,21 @@ from lightningjs.compiler import minify_with_closure
 class RefreshableFile(object):
 
     def __init__(self, path, read=None):
-        self.__path = path
+        self.__path = os.path.abspath(path)
         self.__content = None
         self.__last_timestamp = None
         self.__read = read
         self.read()
 
     def read(self):
-        if not self.__content or self.__last_timestamp > os.path.getmtime(self.__path):
+        current_timestsamp = os.path.getmtime(self.__path)
+        if not self.__content or self.__last_timestamp > current_timestsamp:
             if self.__read:
                 self.__content = self.__read(path=self.__path)
             else:
                 with open(self.__path, 'r') as fd:
                     self.__content = fd.read()
+            self.__last_timestamp = current_timestsamp
         return self.__content
 
 
