@@ -64,7 +64,7 @@ class DevelopmentServerRoutes(object):
 
     def get_test(self, **kwargs):
 
-        # show the root benchmarking page
+        # show the root testing page
         content_type = 'text/html'
         content = render_browser_template(
             path='test.html',
@@ -90,8 +90,8 @@ class DevelopmentServerRoutes(object):
         else:
             lightningjs_bootstrap_code = self.__uncompressed_lightningjs_bootstrap_file.read(force=True)
 
-        # show the root benchmarking page
-        content_type = 'text/html'
+        # return the testlib injected with the proper bootstrap code
+        content_type = 'text/javascript'
         content = render_browser_template(
             path='testlib.js',
             lightningjs_bootstrap_code=lightningjs_bootstrap_code,
