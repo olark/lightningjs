@@ -43,7 +43,7 @@ LightningJS, our embed code will look something like this:
 
     <!-- begin embed code -->
     <script type="text/javascript">/*{literal}<![CDATA[*/
-    window.lightningjs||(function(modules){/*** minified lightningjs embed code ***/})({});
+    /*** lightningjs-embed.min.js ***/
     window.piratelib = lightningjs.require("piratelib", "//static.piratelib.com/piratelib.js");
     /*]]>{/literal}*/</script>
     <!-- end embed code -->
@@ -54,7 +54,9 @@ our code has actually loaded yet:
     piratelib("fireWarningShot", {direction: "starboard"})
 
 This calls the `fireWarningShot` method on our API.  At some point, we decide to
-return a value to our customers that indicates whether the warning shot was seen:
+return a value to our customers that indicates whether the warning shot was seen.
+Since LightningJS already implements a [promise API](http://wiki.commonjs.org/wiki/Promises/A),
+we can use the `.then(fulfillmentCallback, errorCallback)` method on this call:
 
     piratelib("fireWarningShot", {direction: "starboard"}).then(function(didSee) {
         if (!didSee) {
@@ -89,7 +91,7 @@ final embed code might look something like this:
 
     <!-- begin embed code -->
     <script type="text/javascript">/*{literal}<![CDATA[*/
-    window.lightningjs||(function(modules){/*** minified lightningjs embed code ***/})({});
+    /*** lightningjs-embed.min.js ***/
     window.piratelib = lightningjs.require("piratelib", "//static.piratelib.com/piratelib.js");
     /*]]>{/literal}*/</script>
     <!-- end embed code -->
@@ -123,17 +125,11 @@ After doing this, you need to tell LightningJS which methods need to be made
 available for asynchronous calling using the `lightningjs.provide` method.
 For example, you could expose your `fireWarningShot` method like so:
 
-    window.lightningjs||function(b){/*** minified lightningjs bootstrap code ***/}})}(window);
+    /*** lightningjs-bootstrap.min.js ***/
     /*** piratelib library code ***/
     lightningjs.provide("piratelib", {
         fireWarningShot: function(options) {
-            if (crewmembers.areHungry) {
-                // crew is unhappy
-                throw new Error("crew refused");
-            } else {
-                // fire the shot and return whether or not it was seen
-                return piratelib.fireWarningShot();
-            }
+            return piratelib.fireWarningShot(options);
         }
     });
 
