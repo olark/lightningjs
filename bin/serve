@@ -11,19 +11,16 @@ class RefreshableFile(object):
     def __init__(self, path, read=None):
         self.__path = os.path.abspath(path)
         self.__content = None
-        self.__last_timestamp = None
         self.__read = read
-        self.read()
+        self.read(force=True)
 
-    def read(self):
-        current_timestsamp = os.path.getmtime(self.__path)
-        if not self.__content or self.__last_timestamp > current_timestsamp:
+    def read(self, force=False):
+        if force:
             if self.__read:
                 self.__content = self.__read(path=self.__path)
             else:
                 with open(self.__path, 'r') as fd:
                     self.__content = fd.read()
-            self.__last_timestamp = current_timestsamp
         return self.__content
 
 
@@ -41,6 +38,9 @@ class DevelopmentServerRoutes(object):
         self.__lightningjs_bootstrap_file = RefreshableFile(
             path=os.path.join(os.path.dirname(__file__), '..', 'lightningjs-bootstrap.js'),
             read=minify_with_closure,
+            )
+        self.__uncompressed_lightningjs_bootstrap_file = RefreshableFile(
+            path=os.path.join(os.path.dirname(__file__), '..', 'lightningjs-bootstrap.js'),
             )
 
         # cache the other Javascript that we'll want to serve quickly
@@ -70,22 +70,30 @@ class DevelopmentServerRoutes(object):
             path='test.html',
             qunit_css_code=render_browser_template('qunit.css'),
             qunit_javascript_code=render_browser_template('qunit.js'),
-            lightningjs_embed_code=self.__lightningjs_embed_file.read(),
+            lightningjs_embed_code=self.__lightningjs_embed_file.read(force=True),
             )
         return '200 OK', content_type, content
 
-    def get_testlib(self, library_namespace, delay=0, **kwargs):
+    def get_testlib(self, library_namespace, delay=0, compressed=True, **kwargs):
 
         # allow the requester to specify how long this document should take
         # to download, to test asynchronicity more effectively
         if delay:
             time.sleep(delay)
 
+        # figure out whether we are giving the compressed or uncompressed
+        # bootstrap library
+        compressed = bool(int(compressed))
+        if compressed:
+            lightningjs_bootstrap_code = self.__lightningjs_bootstrap_file.read(force=True)
+        else:
+            lightningjs_bootstrap_code = self.__uncompressed_lightningjs_bootstrap_file.read(force=True)
+
         # show the root benchmarking page
         content_type = 'text/html'
         content = render_browser_template(
             path='testlib.js',
-            lightningjs_bootstrap_code=self.__lightningjs_bootstrap_file.read(),
+            lightningjs_bootstrap_code=lightningjs_bootstrap_code,
             library_namespace=library_namespace,
             )
         return '200 OK', content_type, content
