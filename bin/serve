@@ -33,7 +33,13 @@ class DevelopmentServerRoutes(object):
 
         # get a refreshable handle on the embed code
         self.__lightningjs_embed_file = RefreshableFile(
-            path=os.path.join(os.path.dirname(__file__), '..', 'lightning-embed.js'),
+            path=os.path.join(os.path.dirname(__file__), '..', 'lightningjs-embed.js'),
+            read=minify_with_closure,
+            )
+
+        # get a refreshable handle on the bootstrap code
+        self.__lightningjs_bootstrap_file = RefreshableFile(
+            path=os.path.join(os.path.dirname(__file__), '..', 'lightningjs-bootstrap.js'),
             read=minify_with_closure,
             )
 
@@ -54,6 +60,34 @@ class DevelopmentServerRoutes(object):
         # show the root benchmarking page
         content_type = 'text/html'
         content = render_browser_template(path='benchmark.html')
+        return '200 OK', content_type, content
+
+    def get_test(self, **kwargs):
+
+        # show the root benchmarking page
+        content_type = 'text/html'
+        content = render_browser_template(
+            path='test.html',
+            qunit_css_code=render_browser_template('qunit.css'),
+            qunit_javascript_code=render_browser_template('qunit.js'),
+            lightningjs_embed_code=self.__lightningjs_embed_file.read(),
+            )
+        return '200 OK', content_type, content
+
+    def get_testlib(self, library_namespace, delay=0, **kwargs):
+
+        # allow the requester to specify how long this document should take
+        # to download, to test asynchronicity more effectively
+        if delay:
+            time.sleep(delay)
+
+        # show the root benchmarking page
+        content_type = 'text/html'
+        content = render_browser_template(
+            path='testlib.js',
+            lightningjs_bootstrap_code=self.__lightningjs_bootstrap_file.read(),
+            library_namespace=library_namespace,
+            )
         return '200 OK', content_type, content
 
     def get_synchronous(self):

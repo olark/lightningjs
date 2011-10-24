@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LightningJS Tests</title>
+        <style type="text/css">
+            * {
+                font-family: monospace;
+            }
+            %(qunit_css_code)s
+        </style>
+        <script type="text/javascript">%(qunit_javascript_code)s</script>
+    </head>
+    <body>
+
+        <!-- begin embed code -->
+        <script type="text/javascript">/*{literal}<![CDATA[*/
+        %(lightningjs_embed_code)s
+        /*]]>{/literal}*/</script>
+        <!-- end embed code -->
+
+        <!-- begin qunit html -->
+        <h1 id="qunit-header">LightningJS Tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <div id="qunit-fixture"></div>
+        <!-- end qunit html -->
+
+        <!-- begin tests -->
+        <script type="text/javascript">
+
+            asyncTest("can call basic function with no arguments", function(){
+                window.testlib1 = lightningjs.require("testlib1", "/testlib?library_namespace=testlib1");
+                testlib1("asynchronousEcho", "hello world", function(echoText) {
+                    equals(echoText, "echo:hello world");
+                    start();
+                })
+            })
+
+        </script>
+        <!-- end tests -->
+
+    </body>
+</html>
