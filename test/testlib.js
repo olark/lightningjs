@@ -1,8 +1,6 @@
-%(lightningjs_bootstrap_code)s
-
 var downloadTimestamp = +new Date;
 var valueList = [];
-lightningjs.provide('%(library_namespace)s', {
+lightningjs.provide(NAMESPACE || testlib, {
     getDownloadTimestamp: function() {
         return downloadTimestamp;
     },

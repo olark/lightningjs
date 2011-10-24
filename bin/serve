@@ -43,6 +43,14 @@ class DevelopmentServerRoutes(object):
             path=os.path.join(os.path.dirname(__file__), '..', 'lightningjs-bootstrap.js'),
             )
 
+        # get a refreshable handle on our test code
+        self.__test_javascript_file = RefreshableFile(
+            path=os.path.join(os.path.dirname(__file__), '..', 'tests', 'test.js'),
+            )
+        self.__testlib_javascript_file = RefreshableFile(
+            path=os.path.join(os.path.dirname(__file__), '..', 'tests', 'testlib.js'),
+            )
+
         # cache the other Javascript that we'll want to serve quickly
         self.__jquery_code = render_browser_template('jquery.min.js')
         self.__synchronous_embed_javascript = render_browser_template('synchronous-embed.js')
@@ -71,6 +79,7 @@ class DevelopmentServerRoutes(object):
             qunit_css_code=render_browser_template('qunit.css'),
             qunit_javascript_code=render_browser_template('qunit.js'),
             lightningjs_embed_code=self.__lightningjs_embed_file.read(force=True),
+            test_javascript_code=self.__test_javascript_file.read(force=True),
             )
         return '200 OK', content_type, content
 
@@ -92,11 +101,11 @@ class DevelopmentServerRoutes(object):
 
         # return the testlib injected with the proper bootstrap code
         content_type = 'text/javascript'
-        content = render_browser_template(
-            path='testlib.js',
-            lightningjs_bootstrap_code=lightningjs_bootstrap_code,
-            library_namespace=library_namespace,
-            )
+        content = ';'.join([
+            lightningjs_bootstrap_code,
+            'NAMESPACE = %(library_namespace)r' % locals(),
+            self.__testlib_javascript_file.read(force=True)
+        ])
         return '200 OK', content_type, content
 
     def get_synchronous(self):
