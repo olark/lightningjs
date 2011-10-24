@@ -156,6 +156,18 @@ methods are delayed until after the original document completely loads:
         }),
     });
 
+# Contributing to LightningJS
+
+The development cycle should be pretty straightforward:
+
+1. Edit `lightningjs-embed.js` and `lightningjs-bootstrap.js` directly
+2. Run the development server by executing `bin/serve` and visiting
+   [http://localhost:1167](http://localhost:1167) in your browser
+3. Click on the links for testing and benchmarking pages to see the effects of your changes
+4. Rebuild the components before committing your patches, by executing `bin/build`
+
+Feel free to fork, make changes, and send us a pull request...you know the drill.
+
 # Future Work
 
 Loading third-party Javascript is the core goal of LightningJS, and that functionality
