@@ -82,6 +82,15 @@ Finally, we might expose some error handling to our customers for exceptional ca
 
 # Getting Started
 
+The LightningJS API is pretty simple:
+
+- `lightningjs.require` imports third-party code
+- `lightningjs.modules` dictionary of all imported modules
+- `lightningjs.provide` exports third-party code as a LightningJS module
+- `lightningjs.expensive` designates specific exported methods to execute only after the original document is completely finished
+
+...and this step-by-step should get you up and running pretty quickly.
+
 ### **Step 1**: Create your embed code
 
 To make your own embed code, just start with `embed.min.js` and then underneath
