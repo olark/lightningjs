@@ -166,7 +166,7 @@ The development cycle should be pretty straightforward:
 3. Run the development server by executing `bin/serve` and visiting
    [http://localhost:1167](http://localhost:1167) in your browser
 4. Click on the links for testing and benchmarking pages to see the effects of your changes
-  - *you will want to verify your changes in multiple browsers*
+  - *don't forget to check multiple browsers, especially older ones like IE6*
 5. Rebuild the components before committing your patches, by executing `bin/build`
 
 Feel free to fork, make changes, and send us a pull request...you know the drill.
