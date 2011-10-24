@@ -17,15 +17,16 @@ window.lightningjs || (function(modules){
                 modules[g] = function() {
                     var ar = arguments,
                     cx = this,
-                    id = cx ? (cx.id || 0) : 0; (c.s = c.s || []).push([++rd, id, ar]);
+                    promiseFunctionId = ++rd,
+                    id = cx ? (cx.id || 0) : 0; (c.s = c.s || []).push([promiseFunctionId, id, ar]);
                     function fn() {
                         fn.id = rd;
                         return modules[g].apply(fn, arguments)
                     }
                     fn.then = function(fulfillmentHandler, errorHandler, progressHandler) {
-                        var fulfillmentHandlers = c.fh[rd] = c.fh[rd] || [],
-                            errorHandlers = c.eh[rd] = c.eh[rd] || [],
-                            progressHandlers = c.ph[rd] = c.ph[rd] || [];
+                        var fulfillmentHandlers = c.fh[promiseFunctionId] = c.fh[promiseFunctionId] || [],
+                            errorHandlers = c.eh[promiseFunctionId] = c.eh[promiseFunctionId] || [],
+                            progressHandlers = c.ph[promiseFunctionId] = c.ph[promiseFunctionId] || [];
                         fulfillmentHandler && fulfillmentHandlers.push(fulfillmentHandler);
                         errorHandler && errorHandlers.push(errorHandler);
                         progressHandler && progressHandlers.push(progressHandler);

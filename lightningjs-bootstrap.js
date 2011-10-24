@@ -89,10 +89,10 @@ window.lightningjs || (function(window, parentLightningjs){
                 methodSource = methodSourceId > 0 ? responses[methodSourceId] : api,
                 methodArguments = Array.prototype.slice.call(call[2]),
                 methodName = methodArguments.shift(),
-                methodFulfillmentHandlers = root._.fh[methodResponseId] || [],
-                methodErrorHandlers = root._.eh[methodResponseId] || [],
+                methodFulfillmentHandlers = root._.fh[methodResponseId] = root._.fh[methodResponseId] || [],
+                methodErrorHandlers = root._.eh[methodResponseId] = root._.eh[methodResponseId] || [],
                 // TODO: progress handling is not implemented yet
-                methodProgressHandlers = root._.ph[methodResponseId] || [],
+                methodProgressHandlers = root._.ph[methodResponseId] = root._.ph[methodResponseId] || [],
                 method,
                 methodResponse,
                 methodError;
@@ -136,6 +136,10 @@ window.lightningjs || (function(window, parentLightningjs){
                             logError(e);
                         }
                     }
+                    // ensure all future callbacks get called too
+                    methodErrorHandlers.push = function(errorHandler) {
+                        errorHandler(methodError);
+                    }
                 } else {
                     while (methodFulfillmentHandlers.length) {
                         var fulfillmentHandler = methodFulfillmentHandlers.shift();
@@ -144,6 +148,10 @@ window.lightningjs || (function(window, parentLightningjs){
                         } catch(e) {
                             logError(e);
                         }
+                    }
+                    // ensure all future callbacks get called too
+                    methodFulfillmentHandlers.push = function(fulfillmentHandler) {
+                        fulfillmentHandler(methodResponse);
                     }
                 }
 
