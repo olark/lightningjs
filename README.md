@@ -55,18 +55,10 @@ our code has actually loaded yet:
 
 This calls the `fireWarningShot` method on our API.  At some point, we decide to
 return a value to our customers that indicates whether the warning shot was seen.
+We also decide to throw exceptions in cases where the warning shot failed.
 Since LightningJS already implements a [promise API](http://wiki.commonjs.org/wiki/Promises/A),
-we can use the `.then(fulfillmentCallback, errorCallback)` method on this call:
-
-    piratelib("fireWarningShot", {direction: "starboard"}).then(function(didSee) {
-        if (!didSee) {
-            // arrr, those landlubbers didn't see our warning shot...we're no
-            // scallywags, so run another shot across the bow
-            piratelib("fireWarningShot", {direction: "starboard"});
-        }
-    })
-
-Finally, we might expose some error handling to our customers for exceptional cases:
+we can use the `.then(fulfillmentCallback, errorCallback)` method to handle return
+values and exceptions:
 
     piratelib("fireWarningShot", {direction: "starboard"}).then(function(didSee) {
         if (!didSee) {
