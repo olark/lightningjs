@@ -155,6 +155,18 @@ methods are delayed until after the original document completely loads:
         }),
     });
 
+# Future Work
+
+Loading third-party Javascript is the core goal of LightningJS, and that functionality
+has been battle-tested in production scenarios.  However, there are still some areas that need work:
+
+- better testing of the Promise API in production environments
+- exposing the original document's `ready` event to the third-party code
+- working around additional server-side templating systems so that more end-users can paste code into their favorite CMS
+
+Incidentally - though is it really a coincidence? - you can
+[work on cool stuff like this](http://www.olark.com/jobs) here at Olark :)
+
 # Previous Work
 
 Most of the LightningJS concepts build on work done by the fine Javascript
