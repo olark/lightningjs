@@ -89,7 +89,7 @@ The LightningJS API is pretty simple:
 - `lightningjs.provide` exports third-party code as a LightningJS module
 - `lightningjs.expensive` designates specific exported methods to execute only after the original document is completely finished
 
-...and this step-by-step should get you up and running pretty quickly.
+This step-by-step should get you up and running pretty quickly:
 
 ### **Step 1**: Create your embed code
 
