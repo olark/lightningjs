@@ -174,20 +174,17 @@ hackers at Meebo. They even wrote up a great [blog post](http://blog.meebo.com/?
 detailing the reasoning behind the different parts of the Meebo embed code.
 
 You can also find most of these techniques in use by the Olark embed code,
-which contains some minor improvements to enable an
-[asynchronous Javascript API](http://www.olark.com/documentation) and sidestep
-some common templating engine incompatibilities. 
+which added cookie-controlled cachebreaking of the library code download
+and also sidestepped some common templating engine incompatibilities.
 
-The LightningJS project attempts to distill this work and make the code
-more accessible to the community by:
+The LightningJS project distills this work for the open-source community by:
 
 * simplifying the process of including multiple arbitrary Javascript files
 * allowing out-of-the-box handling of asynchronous library calls
-* removing the dependency the Meebo build system
+* removing dependency on the Meebo build system
 
-Somewhat tangentially, you can find more information about traditional
-synchronous and asynchronous third-party embed code (as well as other important
-topics) from the [Third-party JavaScript](http://thirdpartyjs.com/) book,
+For information on traditional third-party embed code (as well as other important
+topics), you could check out the [Third-party JavaScript](http://thirdpartyjs.com/) book,
 written up by a couple engineers from Disqus.
 
 # Alternatives
