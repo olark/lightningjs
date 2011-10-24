@@ -147,5 +147,7 @@ class DevelopmentServerRoutes(object):
 
 if __name__ == '__main__':
 
-    print "lightningjs development server running, visit http://localhost:1167 in your browser..."
-    serve_routable_object(routable_object=DevelopmentServerRoutes(), port=1167)
+    print "booting up lightningjs development server..."
+    routes = DevelopmentServerRoutes()
+    print "lightningjs development server running, visit http://localhost:1167 in your browser."
+    serve_routable_object(routable_object=routes, port=1167)
