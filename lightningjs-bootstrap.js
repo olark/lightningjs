@@ -1,13 +1,17 @@
 window.lightningjs || (function(window, parentLightningjs){
 
+    // get a handle on the parent copy of lightningjs
     var innerLightningjs = window.lightningjs = {modules: parentLightningjs.modules},
         modules = parentLightningjs.modules;
+
+    // export the rest of the lightningjs APIs
     innerLightningjs.expensive = function(callback) {
         callback._waitforload = true;
         return callback;
     }
     innerLightningjs.require = parentLightningjs.require;
     innerLightningjs.provide = function(ns, api) {
+
         // in case we are calling provide() without having ever require()d it,
         // make sure that we create the default callstack, etc
         innerLightningjs.require(ns);
@@ -41,7 +45,7 @@ window.lightningjs || (function(window, parentLightningjs){
             parentLoadPendingCalls = [],
             parentLoadPendingIdLookup = {},
             parentLoaded = false;
-        // NOTE: root.bv contains the embed version
+        // NOTE: root.lv contains the embed version
         api._load = function() {
             // this method gets called whenever the parent.window.onload event fires
             parentLoaded = true;
@@ -96,23 +100,30 @@ window.lightningjs || (function(window, parentLightningjs){
                 method,
                 methodResponse,
                 methodError;
+
             // reconstruct the call and perform it on the API
             if (methodSource) {
+
                 // this is a deferred call on the root API namespace
                 method = methodSource[methodName];
                 if (method) {
+
                     // call the deferred method
                     try {
                         methodResponse = method.apply(method, methodArguments);
                     } catch(e) {
                         methodError = e;
                     }
+
                 } else {
                     // no methods matched for this call
                     // TODO: consider some kind of method_missing approach here?
                     methodError = new Error("unknown deferred method '" + methodName + "'");
                     logError(methodError.toString());
                 }
+
+                // cache the response so that dependent calls can reference it
+                // later on in the callstack
                 if (methodResponse) {
                     responses[methodResponseId] = methodResponse;
                 }
@@ -163,10 +174,17 @@ window.lightningjs || (function(window, parentLightningjs){
                 nextCall = deferredApiCalls.shift();
             }
         }
+
+        // root._.s is the callstack from the embed code, the format is a list of
+        // tuples like this: [responseId, sourceId, argumentList]
+        // ...we change it's push() method here to start triggering dequeuing
+        // of those calls since we have the library provided now
         root._.s = {push: function(deferredArguments){
             deferredApiCalls.push(deferredArguments);
             dequeueDeferredApiCalls();
         }};
+
+        // start dequeing calls immediately
         dequeueDeferredApiCalls();
     }
 
@@ -177,6 +195,8 @@ window.lightningjs || (function(window, parentLightningjs){
 
         // define lightningjs deferred methods
         innerLightningjs.provide('lightningjs', {
+            // helper that allows forced load (could be used to reload modules)
+            // TODO: is this necessary anymore?
             'load': function() {
                 var modules = parentLightningjs.modules,
                     moduleObj;
