@@ -156,6 +156,21 @@ methods are delayed until after the original document completely loads:
         }),
     });
 
+# Browser Compatibility
+
+Exhaustive browser support really important for LightningJS.  To that end, this
+loading approach has been battle-tested in production by both
+[Meebo](http://www.meebo.com) and [Olark](http://www.olark.com) across
+thousands of websites and browsers.  The included tests have been verified to
+pass in every browser we could easily get our hands on:
+
+- Firefox 2+ (tested in 2.0, 3.0, 3.6, 4.0, 5.0, 6.0, 7.0)
+- Chrome 12+ (tested in 12, 13, 14, 15)
+- Internet Explorer 6+ (tested in 6, 7, 8, 9)
+- Safari 4+ (tested in 4.0, 5.0, 5.1)
+- Opera 10+ (tested in 10, 11.5)
+- Mobile Safari 5+ (tested in 5.0, 5.1)
+
 # Contributing to LightningJS
 
 The development cycle should be pretty straightforward:
@@ -176,6 +191,7 @@ Feel free to fork, make changes, and send us a pull request...you know the drill
 Loading third-party Javascript is the core goal of LightningJS, and that functionality
 has been battle-tested in production scenarios.  However, there are still some areas that need work:
 
+- gathering test results on more browsers (older browsers, more mobile browsers)
 - better testing of the Promise API in production environments
 - exposing the original document's `ready` event to the third-party code
 - working around additional server-side templating systems so that more end-users can paste code into their favorite CMS
