@@ -6,12 +6,24 @@
     body {
       background-color: #282828;
       background-image: url('bg.png');
-      color: #4D4D4D;
+      color: #555;
       font-family: Helvetica,Arial,sans-serif;
     }
     .container {
       width: 550px;
       margin: 50px auto 0px auto;
+    }
+    .box {
+      background-color: #282828;
+      border-top: #161616;
+      border-left: #161616;
+      padding: 5px 40px 30px 40px;
+      box-shadow: inset 1px 1px 5px #111, 1px 1px 1px #333;
+      border-radius: 5px;
+      text-align: left;
+      margin-bottom: 80px;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+      
     }
     header {
       text-align: center;
@@ -20,21 +32,87 @@
       display: none;
     }
     header #tagline {
-      margin-top: 20px;
-      background-color: #282828;
-      border-top: #161616;
-      border-left: #161616;
-      padding: 5px 10px;
-      box-shadow: inset 1px 1px 5px #111, 1px 1px 1px #333;
-      border-radius: 5px;
+      margin-top: 24px;
     }
     header #tagline h2 {
       font-size: 1.25em;
       text-shadow: 1px 1px 0px #111;
+      margin-bottom: 30px;
+      color: #555;
+      font-weight: bold;
     }
     header #tagline h2 em {
-      color: #666;
+      color: #888;
       font-style: normal;
+    }
+    header #tagline .button {
+      text-decoration: none;
+      background: #224BF7;
+      color: #fff;
+      text-shadow: -1px -1px 1px #0c2aa6;
+      padding: 5px 10px;
+      font-weight: bold;
+      border-radius: 3px;
+      font-size: 0.9em;
+      box-shadow: inset 0px -1px 2px #1131E0;
+      -webkit-transition: background 0.15s linear;
+    }
+    header #tagline .button:hover {
+      background: #1131E0;
+    }
+    header #tagline a#learn {
+      color: #888;
+    }
+    header #tagline #olark-link {
+      text-decoration: none;
+      color: #555;
+    }
+    header #tagline #olark {
+      float: right;
+      position: relative;
+      bottom: 5px;
+    }
+    header #tagline #olark #olark-logo {
+      background-image: url('olark.png');
+      height: 46px;
+      width: 62px;
+      display: inline-block;
+      position: relative;
+      bottom: 5px;
+    }
+    header #tagline #builtby {
+      font-size: 0.8em;
+      position: relative;
+      bottom: 26px;
+    }
+    .hover {
+      background-position: 96%;
+      width: 61px !important;
+      margin-left: 1px;
+    }
+    
+    h2.section-header {
+      color: #888;
+      padding-left: 40px;
+      text-shadow: 1px 1px 1px #000;
+    }
+    #moreinfo {
+      padding-top: 20px;
+    }
+    #moreinfo h2 {
+      color: #888;
+      font-size: 1em;
+      font-weight: 500;
+      position: relative;
+      right: 18px;
+
+    }
+    .box h2 span {
+      font-weight: bold;
+    }
+    .box p {
+      font-size: 0.85em;
+      color: #555;
     }
   </style>
 </head>
@@ -43,10 +121,42 @@
     <header>
       <h1>Lightning.js - A Safe, Fast, Asynchronous 3rd Party Javascript Embed Code</h1>
       <img src="logo.png" />
-      <div id="tagline">
+      <div id="tagline" class="box">
         <h2>LightningJS is a <em>safe</em>, <em>fast</em>, and <em>asynchronous</em> embed code intended for third-party Javascript.</h2>
+        <a class="button" href="http://github.com/olark/lightningjs">See The Code</a> or <a id="learn" href="https://github.com/olark/lightningjs/blob/master/README.md">The README</a>.
+        <a id="olark-link" href="http://www.olark.com/">
+          <div id="olark"><span id="builtby">Built By Olark</span><div id="olark-logo"> </div>
+        </a>
       </div>
     </header>
+    <h2 class="section-header">Why Use LightningJS?</h2>
+    <div class="box" id="moreinfo">
+      
+      <h2><span>1. Safe:</span> Ensures zero Javascript code conflicts</h2>
+      <p>Globals, prototypes and mismatched library versions can cause lots of compatibility headaches for third-party code.</p>
+      <p>With LightningJS, all of that third-party code lives in its own separate window context. If the code needs to do DOM manipulation, it still has access to the original document via window.parent.</p>
+
+      <h2><span>2. Fast:</span> Avoids blocking window.onload and document.ready</h2>
+      <p>Slowdowns in embedded third-party code should never impact the original document. Traditional embed techniques can block window.onload if the server responds slowly, even when the embed itself is asynchronous.<p>
+      <p>With LightningJS, third-party server response time has zero impact on the original document. It should even be safe to embed the code at the top of the body of the document for an added speed boost :)</p>
+
+      <h2><span>3. Asynchronous:</span> Defers API calls with a simple interface</h2>
+      <p>When customers are using your third-party API, asynchronicity can make usage a bit more complicated. Some libraries require manual creation of a callstack (e.g. Google Analytics var _gaq=[]; _gaq.push(...)), and others try to hook into script.onload events.</p>
+      <p>With LightningJS, the third-party namespace is immediately available as a callable function. All calls return objects that adhere to the CommonJS Promise API. Just a few modifications to the existing API will enable these deferred calls.</p>
+    </div>
   </div>
+  <p style="text-align: center; text-shadow: 1px 1px 1px rgba(0,0,0,0.4);">Copyright &copy; 2011 Habla Inc</p>
+  <a href="http://github.com/olark/lightningjs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script>
+    $(function(){
+      $('#olark').mouseenter(function(){
+        $('#olark-logo').addClass("hover");
+      });
+      $('#olark').mouseleave(function(){
+        $('#olark-logo').removeClass("hover");
+      });
+    });
+  </script>
 </body>
 </html>
