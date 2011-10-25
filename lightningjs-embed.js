@@ -65,7 +65,7 @@ window.lightningjs || (function(modules){
                 internalModule.eh = {}; // errorHandler list
                 internalModule.ph = {}; // progressHandler list
 
-                // generate the 
+                // generate the URL that we will download from (based on http/https)
                 internalModule.l = url ? url.replace(/^\/\//, (protocol=='https:' ? protocol : 'http:') + '//') : url;
 
                 // reference to this closure for possible re-execution
@@ -133,7 +133,8 @@ window.lightningjs || (function(modules){
                     innerFrame = theDocument[createElement]("iframe"),
                     documentString = "document",
                     domain = "domain",
-                    domainSrc;
+                    domainSrc,
+                    contentWindow = "contentWindow";
 
                     // hide the iframe container and append it to the document
                     innerFrameWrapper.style.display = "none";
@@ -141,9 +142,9 @@ window.lightningjs || (function(modules){
                     innerFrame.frameBorder = "0";
                     innerFrame.id = lightningjsName + "-frame-" + namespace;
                     if (/MSIE[ ]+6/.test(navigator.userAgent)) {
-                        // in IE, we make sure to load javascript:false to avoid
+                        // in IE6, we make sure to load javascript:false to avoid
                         // about:blank security warnings under SSL
-                        innerFrame.src = "javascript:false"
+                        innerFrame[srcAttr] = "javascript:false"
                     }
                     innerFrame.allowTransparency = "true";
                     innerFrameContainer[appendChild](innerFrame);
@@ -153,7 +154,7 @@ window.lightningjs || (function(modules){
                     // the window from triggering onload, so we only use the javascript url to open the document and set 
                     // its document.domain
                     try {
-                        innerFrame.contentWindow[documentString].open()
+                        innerFrame[contentWindow][documentString].open()
                     } catch(E) {
                         // keep track of the actual document.domain in the
                         // internal module in case it is useful in the future
@@ -166,7 +167,7 @@ window.lightningjs || (function(modules){
                     // "settle", so trying to access the contentDocument will throw an error. Luckily, in IE 7 we can 
                     // finish writing the html with the iframe src without preventing the page from onloading
                     try {
-                        var frameDocument = innerFrame.contentWindow[documentString];
+                        var frameDocument = innerFrame[contentWindow][documentString];
                         frameDocument.write(buildInnerFrameHtml());
                         frameDocument.close()
                     } catch(D) {
