@@ -20,8 +20,8 @@ Traditional embed techniques can block `window.onload` if the server responds
 slowly, even when the embed itself is asynchronous.
 
 With LightningJS, third-party server response time has zero impact on the 
-original document.  It should even be safe to embed the code in the `<head>` of
-the document for an added speed boost :)
+original document.  It should even be safe to embed the code at the top of the
+`<body>` of the document for an added speed boost :)
 
 ### **Asynchronous:** defers API calls with a simple interface
 
