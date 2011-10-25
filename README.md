@@ -1,6 +1,6 @@
 # LightningJS
 
-LightningJS is a safe, fast, and asynchronous embed code intended for
+[LightningJS](http://lightningjs.com) is a safe, fast, and asynchronous embed code intended for
 third-party Javascript providers.
 
 
