@@ -68,10 +68,6 @@ window.lightningjs || (function(modules){
                 // generate the URL that we will download from (based on http/https)
                 internalModule.l = url ? url.replace(/^\/\//, (protocol=='https:' ? protocol : 'http:') + '//') : url;
 
-                // reference to this closure for possible re-execution
-                // TODO: is this needed anymore? this could be used to reload a module from a new URL
-                internalModule.i = arguments.callee;
-
                 // download performance tracking dictionary (keeps timestamps
                 // of each stage of the download for later analysis)
                 internalModule.p = {
