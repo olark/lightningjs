@@ -80,6 +80,8 @@ window.lightningjs || (function(modules){
                 // track the window.onload event
                 function windowLoadHandler() {
                     internalModule.P(load);
+                    // use internalModule.w to remember that the onload event
+                    // triggered, for future module imports
                     internalModule.w = 1;
                     modules[namespace]('_load')
                 }
