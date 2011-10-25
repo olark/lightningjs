@@ -7,7 +7,7 @@
     body {
       background-color: #282828;
       background-image: url('bg.png');
-      color: #555;
+      color: #aaa;
       font-family: Helvetica,Arial,sans-serif;
     }
     .container {
@@ -15,7 +15,7 @@
       margin: 50px auto 0px auto;
     }
     .box {
-      background-color: #282828;
+      background-color: #252525;
       border-top: #161616;
       border-left: #161616;
       padding: 5px 40px 30px 40px;
@@ -23,7 +23,7 @@
       border-radius: 5px;
       text-align: left;
       margin-bottom: 80px;
-      text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
       
     }
     header {
@@ -39,11 +39,11 @@
       font-size: 1.25em;
       text-shadow: 1px 1px 0px #111;
       margin-bottom: 30px;
-      color: #555;
+      color: #999;
       font-weight: bold;
     }
     header #tagline h2 em {
-      color: #888;
+      color: #fff;
       font-style: normal;
     }
     header #tagline .button {
@@ -66,7 +66,7 @@
     }
     header #tagline #olark-link {
       text-decoration: none;
-      color: #555;
+      color: #999;
     }
     header #tagline #olark {
       float: right;
@@ -101,11 +101,9 @@
       padding-top: 20px;
     }
     #moreinfo h2 {
-      color: #888;
+      color: #fff;
       font-size: 1em;
       font-weight: 500;
-      position: relative;
-      right: 18px;
 
     }
     .box h2 span {
@@ -113,7 +111,7 @@
     }
     .box p {
       font-size: 0.85em;
-      color: #555;
+      color: #999;
     }
   </style>
 </head>
@@ -133,15 +131,15 @@
     <h2 class="section-header">Why Use LightningJS?</h2>
     <div class="box" id="moreinfo">
       
-      <h2><span>1. Safe:</span> Ensures zero Javascript code conflicts</h2>
+      <h2><span>Safe:</span> Ensures zero Javascript code conflicts</h2>
       <p>Globals, prototypes and mismatched library versions can cause lots of compatibility headaches for third-party code.</p>
       <p>With LightningJS, all of that third-party code lives in its own separate window context. If the code needs to do DOM manipulation, it still has access to the original document via window.parent.</p>
 
-      <h2><span>2. Fast:</span> Avoids blocking window.onload and document.ready</h2>
+      <h2><span>Fast:</span> Avoids blocking window.onload and document.ready</h2>
       <p>Slowdowns in embedded third-party code should never impact the original document. Traditional embed techniques can block window.onload if the server responds slowly, even when the embed itself is asynchronous.<p>
       <p>With LightningJS, third-party server response time has zero impact on the original document. It should even be safe to embed the code at the top of the body of the document for an added speed boost :)</p>
 
-      <h2><span>3. Asynchronous:</span> Defers API calls with a simple interface</h2>
+      <h2><span>Asynchronous:</span> Defers API calls with a simple interface</h2>
       <p>When customers are using your third-party API, asynchronicity can make usage a bit more complicated. Some libraries require manual creation of a callstack (e.g. Google Analytics var _gaq=[]; _gaq.push(...)), and others try to hook into script.onload events.</p>
       <p>With LightningJS, the third-party namespace is immediately available as a callable function. All calls return objects that adhere to the CommonJS Promise API. Just a few modifications to the existing API will enable these deferred calls.</p>
     </div>
