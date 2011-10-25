@@ -155,7 +155,9 @@ window.lightningjs || (function(modules){
                     try {
                         innerFrame.contentWindow[documentString].open()
                     } catch(E) {
-                        i[domain] = theDocument[domain];
+                        // keep track of the actual document.domain in the
+                        // internal module in case it is useful in the future
+                        internalModule[domain] = theDocument[domain];
                         domainSrc = "javascript:var d=" + documentString + ".open();d.domain='" + theDocument.domain + "';";
                         innerFrame[srcAttr] = domainSrc + "void(0);"
                     }
