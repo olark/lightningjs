@@ -195,7 +195,11 @@ has been battle-tested in production scenarios.  However, there are still some a
 - better testing of the Promise API in production environments
 - exposing the original document's `ready` event to the third-party code
 - working around additional server-side templating systems so that more end-users can paste code into their favorite CMS
+
+There are lots of other relevant ideas that may be outside the scope of LightningJS:
+
 - designing an easy backwards-compatibility layer for existing third-party libraries
+- integration with [Caja](http://code.google.com/p/google-caja/) sandboxing
 
 Incidentally - though is it really a coincidence? - you can
 [work on cool stuff like this](http://www.olark.com/jobs) here at Olark :)
