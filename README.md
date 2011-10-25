@@ -195,6 +195,7 @@ has been battle-tested in production scenarios.  However, there are still some a
 - better testing of the Promise API in production environments
 - exposing the original document's `ready` event to the third-party code
 - working around additional server-side templating systems so that more end-users can paste code into their favorite CMS
+- designing an easy backwards-compatibility layer for existing third-party libraries
 
 Incidentally - though is it really a coincidence? - you can
 [work on cool stuff like this](http://www.olark.com/jobs) here at Olark :)
