@@ -2,8 +2,8 @@ window.lightningjs || (function(modules){
     var lightningjsName = 'lightningjs';
     function require(moduleName, url) {
         // attach the lightningjs version to the URL to make versioning possible
-        var lightingjsVersion = '1';
-        if (url) url += (/\?/.test(url) ? '&': '?') + 'lv=' + lightingjsVersion;
+        var lightningjsVersion = '1';
+        if (url) url += (/\?/.test(url) ? '&': '?') + 'lv=' + lightningjsVersion;
         // declare the namespace
         modules[moduleName] || (function() {
             var theWindow = window,
@@ -181,7 +181,7 @@ window.lightningjs || (function(modules){
         })();
 
         // freeze the version identifier into this module
-        modules[moduleName].lv = lightingjsVersion;
+        modules[moduleName].lv = lightningjsVersion;
 
         // return the module itself
         return modules[moduleName];
