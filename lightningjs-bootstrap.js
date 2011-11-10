@@ -45,6 +45,12 @@ window.lightningjs || (function(window, parentLightningjs){
             parentLoadPendingCalls = [],
             parentLoadPendingIdLookup = {},
             parentLoaded = false;
+
+        if(deferredApiCalls && deferredApiCalls[0]) {
+            var promiseFunctionId = deferredApiCalls[0][1];
+            responses[promiseFunctionId] = api;
+        }
+        
         // NOTE: root.lv contains the embed version
         api._load = function() {
             // this method gets called whenever the parent.window.onload event fires
