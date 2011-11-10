@@ -255,7 +255,7 @@ asyncTest("can call require() twice for the same namespace and get the exact sam
 });
 
 asyncTest("can call traditional asynchronous echo function when global id is set", function(){
-    window.id = 1;
+    window.id = 999;
     var testlib = loadNewTestingLibraryWithLightningjs();
     expect(1);
     testlib("asynchronousEcho", "hello world", function(echoText) {
