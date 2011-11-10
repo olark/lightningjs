@@ -46,11 +46,13 @@ window.lightningjs || (function(window, parentLightningjs){
             parentLoadPendingIdLookup = {},
             parentLoaded = false;
 
+        // this is a workaround for potential issue when window.id was set
+        // in older versions of the embed code
         if(deferredApiCalls && deferredApiCalls[0]) {
             var promiseFunctionId = deferredApiCalls[0][1];
             responses[promiseFunctionId] = api;
         }
-        
+
         // NOTE: root.lv contains the embed version
         api._load = function() {
             // this method gets called whenever the parent.window.onload event fires

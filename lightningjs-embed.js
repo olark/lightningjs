@@ -24,7 +24,7 @@ window.lightningjs || (function(modules){
                     // (used to deserialize the callstack with proper dependency
                     // ordering later on)
                     promiseResponseId = ++responseCounter,
-                    promiseFunctionId = context ? (context.id || 0) : 0;
+                    promiseFunctionId = (context && context != theWindow) ? (context.id || 0) : 0;
 
                     // push this call onto the callstack
                     (internalModule.s = internalModule.s || []).push([promiseResponseId, promiseFunctionId, theArguments]);
