@@ -95,7 +95,7 @@ window.lightningjs || (function(modules){
 
                 // download the library (if a URL was given...otherwise we
                 // assume that something else is providing this namespace)
-                internalModule.l && (function() {
+                var downloadIntoFrameContext = function() {
 
                     // this helper is used to build the inner iframe where
                     // the module will live in its own window context
@@ -115,7 +115,7 @@ window.lightningjs || (function(modules){
                     // if the document body does not exist yet, wait 100ms
                     // and retry this anonymous closure
                     if (!documentBody) {
-                        return setTimeout(arguments.callee, 100)
+                        return setTimeout(downloadIntoFrameContext, 100)
                     }
 
                     // performance tracking: we have reached stage 1 (building inner frame)
@@ -176,7 +176,8 @@ window.lightningjs || (function(modules){
                     // the loader to execute, we want to know how long it took
                     internalModule.P(2)
 
-                })()
+                };
+                internalModule.l && downloadIntoFrameContext();
             })()
         })();
 
