@@ -218,4 +218,7 @@ window.lightningjs || (function(window, parentLightningjs){
         })
     }
 
+    if (module && module.exports) {
+        module.exports = innerLightningjs;
+    }
 })(window, window.parent.lightningjs);
