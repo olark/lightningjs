@@ -158,6 +158,14 @@ window.lightningjs || (function(modules){
                         innerFrame[srcAttr] = domainSrc + "void(0);"
                     }
 
+                    var loadScript = function(e) {
+                        var iframeDocument = e.currentTarget.contentDocument;
+                        var head = iframeDocument.getElementsByTagName('head')[0];
+                        var script = iframeDocument.createElement('script');
+                        script.setAttribute(srcAttr, internalModule.l);
+                        head.appendChild(script);
+                    };
+
                     // Set the HTML of the iframe. In IE 6, the document.domain from the iframe src hasn't had time to
                     // "settle", so trying to access the contentDocument will throw an error. Luckily, in IE 7 we can
                     // finish writing the html with the iframe src without preventing the page from onloading
@@ -165,13 +173,11 @@ window.lightningjs || (function(modules){
                         var frameDocument = innerFrame[contentWindow][documentString];
                         frameDocument.write(buildInnerFrameHtml());
                         frameDocument.close();
-                        innerFrame.addEventListener('load', function(e) {
-                            var iframeDocument = e.currentTarget.contentDocument;
-                            var head = iframeDocument.getElementsByTagName('head')[0];
-                            var script = iframeDocument.createElement('script');
-                            script.setAttribute(srcAttr, internalModule.l);
-                            head.appendChild(script);
-                        });
+                        if (innerFrame.addEventListener) {
+                            innerFrame.addEventListener('load', loadScript);
+                        } else {
+                            innerFrame.attachEvent('onload', loadScript);
+                        }
                     } catch(D) {
                         innerFrame[srcAttr] = domainSrc + 'd.write("' + buildInnerFrameHtml().replace(/"/g, String.fromCharCode(92) + '"') + '");d.close();'
                     }
