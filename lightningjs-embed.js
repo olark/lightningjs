@@ -101,10 +101,7 @@ window.lightningjs || (function(modules){
                     // the module will live in its own window context
                     function buildInnerFrameHtml() {
                         return [
-                            "<head></head><",body, ' onload="var d=',
-                            documentString, ";d.getElementsByTagName('head')[0].",
-                            appendChild, "(d.", createElement, "('script')).",
-                            srcAttr, "='", internalModule.l, "'\"></", body, ">"
+                            "<head></head><",body, "'\"></", body, ">"
                         ].join("")
                     }
 
@@ -147,9 +144,9 @@ window.lightningjs || (function(modules){
                     innerFrame.allowTransparency = "true";
                     innerFrameContainer[appendChild](innerFrame);
 
-                    // Try to start writing into the blank iframe. In IE, this will fail if document.domain has been set, 
-                    // so fail back to using a javascript src for the frame. In IE > 6, these urls will normally prevent 
-                    // the window from triggering onload, so we only use the javascript url to open the document and set 
+                    // Try to start writing into the blank iframe. In IE, this will fail if document.domain has been set,
+                    // so fail back to using a javascript src for the frame. In IE > 6, these urls will normally prevent
+                    // the window from triggering onload, so we only use the javascript url to open the document and set
                     // its document.domain
                     try {
                         innerFrame[contentWindow][documentString].open()
@@ -161,13 +158,20 @@ window.lightningjs || (function(modules){
                         innerFrame[srcAttr] = domainSrc + "void(0);"
                     }
 
-                    // Set the HTML of the iframe. In IE 6, the document.domain from the iframe src hasn't had time to 
-                    // "settle", so trying to access the contentDocument will throw an error. Luckily, in IE 7 we can 
+                    // Set the HTML of the iframe. In IE 6, the document.domain from the iframe src hasn't had time to
+                    // "settle", so trying to access the contentDocument will throw an error. Luckily, in IE 7 we can
                     // finish writing the html with the iframe src without preventing the page from onloading
                     try {
                         var frameDocument = innerFrame[contentWindow][documentString];
                         frameDocument.write(buildInnerFrameHtml());
-                        frameDocument.close()
+                        frameDocument.close();
+                        innerFrame.addEventListener('load', function(e) {
+                            var iframeDocument = e.currentTarget.contentDocument;
+                            var head = iframeDocument.getElementsByTagName('head')[0];
+                            var script = iframeDocument.createElement('script');
+                            script.setAttribute(srcAttr, internalModule.l);
+                            head.appendChild(script);
+                        });
                     } catch(D) {
                         innerFrame[srcAttr] = domainSrc + 'd.write("' + buildInnerFrameHtml().replace(/"/g, String.fromCharCode(92) + '"') + '");d.close();'
                     }
