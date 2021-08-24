@@ -3,6 +3,11 @@
 [LightningJS](http://lightningjs.com) is a safe, fast, and asynchronous embed code intended for
 third-party Javascript providers.
 
+## Special Fork to remove unsafe-inline for CSP
+
+This version is used by [GetFeedback](https://www.getfeedback.com/)
+
+It solves the [issue with the Content-Security-Policy](https://github.com/olark/lightningjs/issues/12), so you can remove the `unsafe-inline`.
 
 ### **Safe:** ensures zero Javascript code conflicts
 
@@ -19,7 +24,7 @@ Slowdowns in embedded third-party code should never impact the original document
 Traditional embed techniques can block `window.onload` if the server responds
 slowly, even when the embed itself is asynchronous.
 
-With LightningJS, third-party server response time has zero impact on the 
+With LightningJS, third-party server response time has zero impact on the
 original document.  It should even be safe to embed the code at the top of the
 `<body>` of the document for an added speed boost :)
 
