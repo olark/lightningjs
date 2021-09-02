@@ -99,11 +99,22 @@ window.lightningjs || (function(modules){
 
                     // this helper is used to build the inner iframe where
                     // the module will live in its own window context
-                    function buildInnerFrameHtml() {
-                        return [
-                            "<head></head><",body, "'\"></", body, ">"
-                        ].join("")
+                    function buildInnerFrameHtmlWithListener() {
+                      return [
+                        "<head></head><", body,
+                        '><script>window.addEventListener("load", function(){var d=', documentString,
+                        ";d.getElementsByTagName('head')[0].", appendChild, "(d.", createElement, "('script')).",
+                        srcAttr, "='", internalModule.l, "';});<\/script></", body, ">"
+                      ].join("");
                     }
+                    function buildInnerFrameHtml() {
+                      return [
+                        "<head></head><",body, ' onload="var d=',
+                        documentString, ";d.getElementsByTagName('head')[0].",
+                        appendChild, "(d.", createElement, "('script')).",
+                        srcAttr, "='", internalModule.l, "'\"></", body, ">"
+                      ].join("")
+                  }
 
                     // try to get a handle on the document body
                     var body = "body",
@@ -171,13 +182,12 @@ window.lightningjs || (function(modules){
                     // finish writing the html with the iframe src without preventing the page from onloading
                     try {
                         var frameDocument = innerFrame[contentWindow][documentString];
-                        frameDocument.write(buildInnerFrameHtml());
-                        frameDocument.close();
-                        if (innerFrame.addEventListener) {
-                            innerFrame.addEventListener('load', loadScript);
+                        if (innerFrame.addEventListener){
+                          frameDocument.write(buildInnerFrameHtmlWithListener());
                         } else {
-                            innerFrame.attachEvent('onload', loadScript);
+                          frameDocument.write(buildInnerFrameHtml());
                         }
+                        frameDocument.close();
                     } catch(D) {
                         innerFrame[srcAttr] = domainSrc + 'd.write("' + buildInnerFrameHtml().replace(/"/g, String.fromCharCode(92) + '"') + '");d.close();'
                     }
