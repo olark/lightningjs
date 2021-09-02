@@ -100,13 +100,14 @@ window.lightningjs || (function(modules){
                     // this helper is used to build the inner iframe where
                     // the module will live in its own window context
                     function buildInnerFrameHtml() {
-                        return [
-                            "<head></head><",body, "'\"></", body, ">"
-                        ].join("")
+                      return [
+                        "<head></head><",body,"><",script," src=\"", internalModule.l,"\"></",script,"></", body,">",
+                      ].join("");
                     }
 
                     // try to get a handle on the document body
                     var body = "body",
+                    script = "script",
                     documentBody = theDocument[body];
 
                     // if the document body does not exist yet, wait 100ms
@@ -173,11 +174,6 @@ window.lightningjs || (function(modules){
                         var frameDocument = innerFrame[contentWindow][documentString];
                         frameDocument.write(buildInnerFrameHtml());
                         frameDocument.close();
-                        if (innerFrame.addEventListener) {
-                            innerFrame.addEventListener('load', loadScript);
-                        } else {
-                            innerFrame.attachEvent('onload', loadScript);
-                        }
                     } catch(D) {
                         innerFrame[srcAttr] = domainSrc + 'd.write("' + buildInnerFrameHtml().replace(/"/g, String.fromCharCode(92) + '"') + '");d.close();'
                     }
