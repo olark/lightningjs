@@ -101,13 +101,14 @@ window.lightningjs || (function(modules){
                     // the module will live in its own window context
                     function buildInnerFrameHtml() {
                       return [
-                        "<head></head><",body,"><",script," src=\"", internalModule.l,"\"></",script,"></", body,">",
+                        "<!DOCTYPE ",html,"><",html,"><head></head><",body,"><",script," src=\"", internalModule.l,"\"></",script,"></", body,"></",html,">",
                       ].join("");
                     }
 
                     // try to get a handle on the document body
                     var body = "body",
                     script = "script",
+                    html = "html",
                     documentBody = theDocument[body];
 
                     // if the document body does not exist yet, wait 100ms
